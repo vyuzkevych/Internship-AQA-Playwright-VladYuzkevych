@@ -1,17 +1,17 @@
 import { test, expect, FrameLocator, Locator } from "@playwright/test"
-import { faker } from "@faker-js/faker"
+import { userData } from "../../test-data/user-data";
 
 test.describe("HW Playwright_L21.Locators.and.actions", () => {
 
     test("register form", async ({ page }) => {
         await page.goto("https://qa-practice.netlify.app/register");
 
-        await page.locator("#firstName").fill(faker.person.firstName());
-        await page.locator("#lastName").fill(faker.person.lastName());
-        await page.locator("#phone").fill(faker.phone.number());
+        await page.locator("#firstName").fill(userData.firstName);
+        await page.locator("#lastName").fill(userData.lastName);
+        await page.locator("#phone").fill(userData.phone);
         await page.locator("#countries_dropdown_menu").selectOption("Ukraine");
-        await page.locator("#emailAddress").fill(faker.internet.email());
-        await page.locator("#password").fill(faker.internet.password());
+        await page.locator("#emailAddress").fill(userData.email);
+        await page.locator("#password").fill(userData.password);
 
         await page.locator("#exampleCheck1").check();
         await page.locator("#registerBtn").click();
