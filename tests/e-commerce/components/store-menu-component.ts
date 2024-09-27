@@ -1,8 +1,7 @@
 import { Locator, Page } from "@playwright/test"
 
 export class StoreMenuComponent {
-    readonly menCategory: Locator = this.page.getByRole('menuitem', { name: ' Men' }); // getByRole('menuitem', { name: ' Men' })
-    // getByRole('link', { name: 'Men', exact: true })
+    readonly menCategory: Locator = this.page.getByRole('menuitem', { name: ' Men' });
 
     constructor(private page: Page) {}
 
