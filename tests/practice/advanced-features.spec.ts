@@ -1,84 +1,74 @@
-import { expect, Locator, test } from "@playwright/test";
-import dayjs from 'dayjs';
+import { expect, test } from "@playwright/test";
 import path from "path";
+import { WindowsPage } from "./app/leetcode/pages/windows-page";
+import { CalendarPage } from "./app/netlify/pages/calendar-page";
+import { FileUploadPage } from "./app/netlify/pages/file-upload-page";
+import { SliderPage } from "./app/leetcode/pages/slider-page";
+import { BasePage as leetcode } from "./app/leetcode/pages/base-page";
+import { BasePage as netlify } from "./app/netlify/pages/base-page";
+import { VisualPage } from "./app/netlify/pages/visual-page";
 
 test.describe("Playwright: Advanced features", () => {
+    let baseNetlifyPage;
+    let baseLeetcodePage;
+
+    test.beforeEach(async ({ page }) => {
+        baseNetlifyPage = new netlify(page);
+        baseLeetcodePage = new leetcode(page);
+    })
     
     test("Task 1", async ({ page, context }) => {
+        const windowsPage: WindowsPage = new WindowsPage(page);
         const pagePromise = context.waitForEvent("page");
-        await page.goto("https://letcode.in/windows");
-        await page.locator("#home").click();
+        await page.goto(`${baseLeetcodePage.baseUrl}/windows`);
+
+        await windowsPage.clickOnHomeBtn();
         const newPage = await pagePromise;
-        await newPage.waitForURL("https://letcode.in/test");
+        await newPage.waitForURL(`${baseLeetcodePage.baseUrl}/test`);
         const newPageTitle = await newPage.title();
 
         expect(newPageTitle).toBe("LetCode - Testing Hub");
     });
-
     
     test("Taks 2", async ({ page }) => {
-        await page.goto("https://qa-practice.netlify.app/calendar");
+        const calendarPage: CalendarPage = new CalendarPage(page);
+        await page.goto(`${baseNetlifyPage.baseUrl}/calendar`);
         
-        const calendar: Locator = page.locator("#calendar");
-        const datepickerHeaderDate: Locator = page.locator("table[class=' table-condensed'] th[class='datepicker-switch']");
-        const datePickerPrev: Locator = page.locator("table[class=' table-condensed'] th[class='prev']");
-        const datePickerNext: Locator = page.locator("table[class=' table-condensed'] th[class='next']");
-        const datePickerDay: Locator = page.locator("td[class='day']");
-
-        const currentDate = dayjs();
-
-        async function selectDate (day: string, month: string, year: string) {    
-            const dateFull = dayjs(`${month} ${day} ${year}`);
-            const dateFullFormatted = dateFull.format("MMMM YYYY");
-
-            await calendar.click();
-            
-            while (await datepickerHeaderDate.innerText() !== dateFullFormatted) {
-                if (currentDate.isAfter(dateFull)) {
-                    await datePickerPrev.click();
-                } else {
-                    await datePickerNext.click();
-                }
-            }
-
-            const finalDate = dayjs(`${await datePickerDay.filter({ hasText: `${day}` }).innerText()} ${await datepickerHeaderDate.innerText()}`);
-            await datePickerDay.filter({ hasText: `${day}` }).click();
-            return finalDate.format("DD MMMM YYYY");
-        }
-
-        const date = await selectDate("28", "May", "2024");
+        const date = await calendarPage.selectDate("28", "May", "2024");
         expect(date).toBe("28 May 2024")
     });
 
     test("Task 3", async ({ page }) => {
-        await page.goto("https://qa-practice.netlify.app/file-upload");
+        const fileUploadPage: FileUploadPage = new FileUploadPage(page);
+        await page.goto(`${baseNetlifyPage.baseUrl}/file-upload`);
 
         const fileChooserPromise = page.waitForEvent("filechooser");
-        await page.locator("#file_upload").click();
+        await fileUploadPage.clickOnFileUploadBtn();
         const filechooser = await fileChooserPromise;
         await filechooser.setFiles(path.join("cat.jpg"));
 
-        await page.getByRole("button", { name: "Submit" }).click();
-        const successMessage = await page.locator("#file_upload_response").innerText();
+        await fileUploadPage.clickOnSubmitBtn();
+        const successMessage = await fileUploadPage.getSuccessMessageText();
         expect(successMessage).toBe(`You have successfully uploaded "cat.jpg"`);
     });
 
     test("Task 4", async ({ page }) => {
-        await page.goto("https://qa-practice.netlify.app/visual");
+        const visualPage = new VisualPage(page)
+        await page.goto(`${baseNetlifyPage.baseUrl}/visual`);
 
-        await expect(page).toHaveScreenshot({ mask: [page.locator("#dynamic-gif")]});
+        await expect(page).toHaveScreenshot({ mask: [visualPage.maskLocator]});
     });
 
     test("Task 5", async ({ page }) => {
-        await page.goto('https://letcode.in/slider');
-        await page.locator("#generate").fill("4");
-        await page.getByRole("button", { name: "Get Countries" }).click();
+        const sliderPage: SliderPage = new SliderPage(page);
+        await page.goto(`${baseLeetcodePage.baseUrl}/slider`);
 
-        const textInfo = await page.getByRole("heading", { name: "Word limit :" }).innerText();
-        const number = Number(textInfo.split(" :")[1]);
-        const countries = await page.locator("p[class='has-text-primary-light']").innerText();
-        const countriesArr = countries.split(" - ")
+        await sliderPage.enterSliderValue("4");
+        await sliderPage.clickOnGetCountriesBtn();
 
-        expect(countriesArr.length).toBe(number);
+        const countryNumber: number = await sliderPage.getCountryNumber();
+        const countries: string[] = await sliderPage.getCountries();
+
+        expect(countries.length).toBe(countryNumber);
     });
 })
