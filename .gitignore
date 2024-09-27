@@ -6,3 +6,4 @@ jsconfig.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+**/*snapshots*
