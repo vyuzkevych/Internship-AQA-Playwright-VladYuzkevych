@@ -1,4 +1,5 @@
-import { expect, request, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { faker } from "@faker-js/faker";
 
 test.describe("Playwright_L26.API.testing", () => {
     const baseUrl = "https://petstore.swagger.io/v2/pet"
@@ -21,7 +22,7 @@ test.describe("Playwright_L26.API.testing", () => {
     });
 
     test("Implement Pet endpoint flow", async ({ request }) => {
-        const petId = 909900;
+        const petId = faker.number.int({ min: 3, max: 10 });
         const petName = "testPet";
 
         await test.step("Add a new pet to the store", async () => {
@@ -40,6 +41,12 @@ test.describe("Playwright_L26.API.testing", () => {
         });
         await test.step("Get a pet by ID", async () => {
             const resp = await request.get(`${baseUrl}/${petId}`);
+            const jsonResp = await resp.json();
+
+            expect(jsonResp).toMatchObject({
+                id: petId,
+                name: petName
+            });
             expect(resp.ok);
         });
         await test.step("Update a pet", async () => {
