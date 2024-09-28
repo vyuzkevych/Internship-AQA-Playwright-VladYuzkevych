@@ -1,37 +1,12 @@
-import { expect, test } from "@playwright/test"
-import { MainPage } from "../pages/main-page"
-import { ProductPage } from "../pages/products-page"
-import { ProductDetailsPage } from "../pages/product-details-page"
-import { CheckoutPage } from "../pages/checkout-page"
-import { SuccessPage } from "../pages/success-page"
-import { StoreMenuComponent } from "../components/store-menu-component"
-import { HeaderComponent } from "../components/header-component"
-import { CompareProductPage } from "../pages/compare-product-page"
+import { expect, test } from "../fixtures/base-fixture"
 import getRandomIndex from "../utils/generate-random-index"
 import checkoutData from "../test-data/checkout-data"
 
 test.describe("Playwright_new_L22.POM", () => {
-    let mainPage: MainPage;
-    let productPage: ProductPage;
-    let productDetailsPage: ProductDetailsPage;
-    let checkoutPage: CheckoutPage;
-    let successPage: SuccessPage;
-    let compareProductPage: CompareProductPage;
-    let storeMenuComponent: StoreMenuComponent;
-    let headerComponent: HeaderComponent;
 
-    test.beforeEach(async ({ page }) => {
-        mainPage = new MainPage(page);
-        productPage = new ProductPage(page);
-        productDetailsPage = new ProductDetailsPage(page);
-        checkoutPage = new CheckoutPage(page);
-        successPage = new SuccessPage(page);
-        compareProductPage = new CompareProductPage(page);
-        storeMenuComponent = new StoreMenuComponent(page);
-        headerComponent = new HeaderComponent(page);
-    });
-
-    test("Task 1", async ({ page }) => {
+    test("Task 1", async ({ page, mainPage, productPage, productDetailsPage, checkoutPage,
+        successPage, storeMenuComponent, headerComponent
+     }) => {
         await test.step("Open the main page", async () => {
             await mainPage.goTo();
             
@@ -94,7 +69,8 @@ test.describe("Playwright_new_L22.POM", () => {
         });
     });
 
-    test("Taks 2", async ({ page }) => {
+    test("Taks 2", async ({ page, mainPage, productPage, productDetailsPage, checkoutPage,
+        successPage, storeMenuComponent, headerComponent, compareProductPage }) => {
         await test.step("Open the main page", async () => {
             await mainPage.goTo();
             
@@ -186,6 +162,33 @@ test.describe("Playwright_new_L22.POM", () => {
             await expect(successPage.successMessage).toBeVisible();
             // verify that order id is not an empty string
             await expect(successPage.orderId).toContainText(/.*\S.*/);
+        });
+    });
+
+    test("Playwright L23, Task 4", async ({ mainPage, storeMenuComponent, productPage,
+        logInPage, wishlistPage
+     }) => {
+        let nameOfProduct: string;
+
+        await test.step("Open the main page", async () => {
+            await logInPage.logIn(process.env.EMAIL!, process.env.PASSWORD!);
+            await mainPage.goTo();
+        });
+
+        await test.step("Open any product category", async () => {
+            await storeMenuComponent.clickOnMenCategory();
+            await productPage.clickOnPantsCategory();
+        });
+
+        await test.step("Add any product to the 'Wishlist'", async () => {
+            const index: number = getRandomIndex(await productPage.getAmountOfProducts());
+            nameOfProduct =  await productPage.getProductName(index);
+            await productPage.product.nth(index).hover();
+            await productPage.clickOnAddToWishList(index);
+        });
+
+        await test.step("Open the 'Wishlist' and verify that the product is present", async () => {
+            await expect(wishlistPage.getProductByName(nameOfProduct)).toBeVisible();
         });
     });
 });

@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test"
+import { Page } from "@playwright/test"
 
 export class MainPage {
     readonly homePagetitle = "Home Page";
@@ -6,7 +6,7 @@ export class MainPage {
     constructor(readonly page: Page) {}
 
     async goTo() {
-        await this.page.goto("https://magento.softwaretestingboard.com");
+        await this.page.goto("/");
     }
     
 }
