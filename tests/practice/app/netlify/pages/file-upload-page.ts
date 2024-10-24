@@ -1,11 +1,15 @@
 import { Page, Locator} from "@playwright/test";
 
 export class FileUploadPage {
-    readonly fileUploadBtn: Locator = this.page.locator("#file_upload");
-    readonly submitBtn: Locator = this.page.getByRole("button", { name: "Submit" });
-    readonly successMessage: Locator = this.page.locator("#file_upload_response");
+    readonly fileUploadBtn: Locator;
+    readonly submitBtn: Locator;
+    readonly successMessage: Locator;
 
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.fileUploadBtn = this.page.locator("#file_upload");
+        this.submitBtn = this.page.getByRole("button", { name: "Submit" });
+        this.successMessage = this.page.locator("#file_upload_response");
+    }
 
     async clickOnFileUploadBtn(): Promise<void> {
         await this.fileUploadBtn.click();

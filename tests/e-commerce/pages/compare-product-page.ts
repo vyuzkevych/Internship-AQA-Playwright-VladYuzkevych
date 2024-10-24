@@ -1,12 +1,17 @@
 import { Page, Locator} from "@playwright/test"
 
 export class CompareProductPage {
-    readonly pageTitle: Locator = this.page.locator(".page-title-wrapper", { hasText: "Compare Products" });
-    readonly productTable: Locator = this.page.locator("tbody tr td .product-item-photo");
-    readonly priceOfProducts: Locator = this.page.locator("span[data-price-type='finalPrice'] span");
-    readonly addToCartBtn: Locator = this.page.locator("button[type='submit'] span").filter({ hasText: "Add to Cart" });
+    readonly pageTitle: Locator;
+    readonly productTable: Locator;
+    readonly priceOfProducts: Locator;
+    readonly addToCartBtn: Locator;
 
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.pageTitle = this.page.locator(".page-title-wrapper", { hasText: "Compare Products" });
+        this.productTable = this.page.locator("tbody tr td .product-item-photo");
+        this.priceOfProducts = this.page.locator("span[data-price-type='finalPrice'] span");
+        this.addToCartBtn = this.page.locator("button[type='submit'] span").filter({ hasText: "Add to Cart" });
+    }
 
     async findLowestPrice(): Promise<string> {
         const prices: string[] = await this.priceOfProducts.allTextContents();

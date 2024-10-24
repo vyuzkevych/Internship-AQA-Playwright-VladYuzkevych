@@ -1,12 +1,17 @@
 import { Page, Locator } from "@playwright/test";
 
 export class SliderPage {
-    readonly slider: Locator = this.page.locator("#generate");
-    readonly getCountriesBtn: Locator = this.page.getByRole("button", { name: "Get Countries" });
-    readonly textInfo: Locator = this.page.getByRole("heading", { name: "Word limit :" });
-    readonly countries: Locator = this.page.locator("p[class='has-text-primary-light']");
+    readonly slider: Locator;
+    readonly getCountriesBtn: Locator;
+    readonly textInfo: Locator;
+    readonly countries: Locator;
 
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.slider = this.page.locator("#generate");
+        this.getCountriesBtn = this.page.getByRole("button", { name: "Get Countries" });
+        this.textInfo = this.page.getByRole("heading", { name: "Word limit :" });
+        this.countries = this.page.locator("p[class='has-text-primary-light']");
+    }
 
     async enterSliderValue(val: string): Promise<void> {
         await this.slider.fill(val);

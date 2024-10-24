@@ -1,21 +1,34 @@
 import { Page, Locator } from "@playwright/test"
 
 export class CheckoutPage {
-    readonly email: Locator = this.page.locator(".control._with-tooltip input[type='email']");
-    readonly firstName: Locator = this.page.locator("input[name='firstname']");
-    readonly lastName: Locator = this.page.locator("input[name='lastname']");
-    readonly streetAddress: Locator = this.page.locator("input[name='street[0]']");
-    readonly city: Locator = this.page.locator("input[name='city']");
-    readonly state: Locator = this.page.locator("select[name='region_id']");
-    readonly zipCode: Locator = this.page.locator("input[name='postcode']");
-    readonly country: Locator = this.page.locator("select[name='country_id']");
-    readonly phone: Locator = this.page.locator("input[name='telephone']");
-    readonly shippMethodRadio: Locator = this.page.locator("input[type='radio']");
-    readonly nextBtn: Locator = this.page.getByRole("button").filter({ hasText: "Next" });
-    readonly placeOrderBtn: Locator = this.page.getByRole("button").filter({ hasText: "Place Order" });
+    readonly email: Locator;
+    readonly firstName: Locator;
+    readonly lastName: Locator;
+    readonly streetAddress: Locator;
+    readonly city: Locator;
+    readonly state: Locator;
+    readonly zipCode: Locator;
+    readonly country: Locator;
+    readonly phone: Locator;
+    readonly shippMethodRadio: Locator;
+    readonly nextBtn: Locator;
+    readonly placeOrderBtn: Locator;
     readonly pageTitle: string = "Checkout";
     
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.email = this.page.locator(".control._with-tooltip input[type='email']");
+        this.firstName = this.page.locator("input[name='firstname']");
+        this.lastName = this.page.locator("input[name='lastname']");
+        this.streetAddress = this.page.locator("input[name='street[0]']");
+        this.city = this.page.locator("input[name='city']");
+        this.state = this.page.locator("select[name='region_id']");
+        this.zipCode = this.page.locator("input[name='postcode']");
+        this.country = this.page.locator("select[name='country_id']");
+        this.phone = this.page.locator("input[name='telephone']");
+        this.shippMethodRadio = this.page.locator("input[type='radio']");
+        this.nextBtn = this.page.getByRole("button").filter({ hasText: "Next" });
+        this.placeOrderBtn = this.page.getByRole("button").filter({ hasText: "Place Order" });
+    }
 
     async fillEmail(email: string): Promise<void> {
         await this.email.fill(email);

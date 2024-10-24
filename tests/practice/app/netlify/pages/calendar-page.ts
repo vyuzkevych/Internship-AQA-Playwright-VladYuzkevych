@@ -2,13 +2,19 @@ import { Page, Locator } from "@playwright/test";
 import dayjs from 'dayjs';
 
 export class CalendarPage {
-    readonly calendar: Locator = this.page.locator("#calendar");
-    readonly datepickerHeaderDate: Locator = this.page.locator("table[class=' table-condensed'] th[class='datepicker-switch']");
-    readonly datePickerPrev: Locator = this.page.locator("table[class=' table-condensed'] th[class='prev']");
-    readonly datePickerNext: Locator = this.page.locator("table[class=' table-condensed'] th[class='next']");
-    readonly datePickerDay: Locator = this.page.locator("td[class='day']");
+    readonly calendar: Locator;
+    readonly datepickerHeaderDate: Locator;
+    readonly datePickerPrev: Locator;
+    readonly datePickerNext: Locator;
+    readonly datePickerDay: Locator;
 
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.calendar = this.page.locator("#calendar");
+        this.datepickerHeaderDate = this.page.locator("table[class=' table-condensed'] th[class='datepicker-switch']");
+        this.datePickerPrev = this.page.locator("table[class=' table-condensed'] th[class='prev']");
+        this.datePickerNext = this.page.locator("table[class=' table-condensed'] th[class='next']");
+        this.datePickerDay = this.page.locator("td[class='day']");
+    }
 
     async selectDate (day: string, month: string, year: string): Promise<string> {
         const currentDate = dayjs();

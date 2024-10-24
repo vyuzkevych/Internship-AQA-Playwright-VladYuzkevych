@@ -1,14 +1,21 @@
 import { Locator, Page } from "@playwright/test";
 
 export class ProductDetailsPage {
-    readonly addToCartBtn: Locator = this.page.getByTitle("Add to Cart");
-    readonly sizeBtns: Locator = this.page.locator(".swatch-option.text");
-    readonly colorBtn: Locator = this.page.locator(".swatch-option.color");
-    readonly addedAlert: Locator = this.page.locator("div[role='alert']").first();
-    readonly comparePageLink: Locator = this.page.getByRole("link", { name: "comparison list" });
-    readonly addToCompareBtn: Locator = this.page.getByText("Add to Compare");
+    readonly addToCartBtn: Locator;
+    readonly sizeBtns: Locator;
+    readonly colorBtn: Locator;
+    readonly addedAlert: Locator;
+    readonly comparePageLink: Locator;
+    readonly addToCompareBtn: Locator;
 
-    constructor(readonly page: Page) {}
+    constructor(readonly page: Page) {
+        this.addToCartBtn = this.page.getByTitle("Add to Cart");
+        this.sizeBtns = this.page.locator(".swatch-option.text");
+        this.colorBtn = this.page.locator(".swatch-option.color");
+        this.addedAlert = this.page.locator("div[role='alert']").first();
+        this.comparePageLink = this.page.getByRole("link", { name: "comparison list" });
+        this.addToCompareBtn = this.page.getByText("Add to Compare");
+    }
 
     async clickOnAddToCompareBtn(): Promise<void> {
         await this.addToCompareBtn.click();

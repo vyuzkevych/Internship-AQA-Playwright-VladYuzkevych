@@ -1,12 +1,17 @@
 import { Locator, Page } from "@playwright/test"
 
 export class ProductPage {
-    readonly pantsCategory: Locator = this.page.getByRole('link', { name: 'Pants', exact: true });
-    readonly product: Locator = this.page.locator(".product-image-container");
-    readonly productName: Locator = this.page.locator(".product-item-link");
-    readonly wishListBtn: Locator = this.page.getByTitle("Add to Wish List");
+    readonly pantsCategory: Locator;
+    readonly product: Locator;
+    readonly productName: Locator;
+    readonly wishListBtn: Locator;
     
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+        this.pantsCategory = this.page.getByRole('link', { name: 'Pants', exact: true });
+        this.product = this.page.locator(".product-image-container");
+        this.productName = this.page.locator(".product-item-link");
+        this.wishListBtn = this.page.getByTitle("Add to Wish List");
+    }
 
     async clickOnPantsCategory(): Promise<void> {
         await this.pantsCategory.click();
